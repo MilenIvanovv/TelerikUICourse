@@ -50,6 +50,7 @@ function solve() {
         function ContentModifier(event) {
             let selectedContent;
             let Nodes = element.childNodes;
+            
             for (let i = 0; i < Nodes.length; i++) {
                 if(Nodes[i] === event.target){
                     for (let n = i + 1 ; n < Nodes.length; n++) {
