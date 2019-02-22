@@ -49,12 +49,17 @@ function solve() {
             photo.style.height = "200px";
             photo.style.width = "300px";
 
-            tumbnails.appendChild(titlePhoto);
-            tumbnails.appendChild(photo);
+            let imageContainer = document.createElement("div")
+            imageContainer.appendChild(titlePhoto);
+            imageContainer.appendChild(photo);
+            imageContainer.setAttribute("class","image-container");
+            
+            tumbnails.appendChild(imageContainer);
+
         }
                 //right-row Style
         tumbnails.style.float = "right";
-        tumbnails.setAttribute("width","30%");
+        tumbnails.style.width = "30%";
 
 
             //BigPhoto DIV
@@ -62,6 +67,7 @@ function solve() {
         let largePhoto = document.createDocumentFragment();
         largePhoto.appendChild(div);
         largePhoto = largePhoto.querySelector("div");
+        largePhoto.setAttribute("class","image-preview");
                 //title
         let title = document.createElement("p");
         title.style.textAlign = "center";
