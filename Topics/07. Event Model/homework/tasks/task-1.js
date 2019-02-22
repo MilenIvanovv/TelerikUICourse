@@ -48,15 +48,22 @@ function solve() {
         }
 
         function ContentModifier(event) {
-            let temp = event.target;
-            if(temp.nextElementSibling.tagName === "BR"){
-                temp = temp.nextElementSibling;
+            let selectedContent;
+            let Nodes = element.childNodes;
+            for (let i = 0; i < Nodes.length; i++) {
+                if(Nodes[i] === event.target){
+                    for (let n = i + 1 ; n < Nodes.length; n++) {
+                        if(Nodes[n].className === "button"){
+                            return;
+                        }
+                        else if(Nodes[n].className === "content"){
+                            selectedContent = Nodes[n];
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
-            if(temp.nextElementSibling.className !== "content"){
-                return;
-            }
-            let selectedContent = temp.nextElementSibling;
-            
 
             if(!(selectedContent.offsetWidth > 0 && selectedContent.offsetHeight > 0)){
                 selectedContent.style.display = "block";
