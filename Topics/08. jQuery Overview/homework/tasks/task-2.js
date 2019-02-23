@@ -18,9 +18,46 @@ Create a function that takes a selector and:
 
 */
 function solve() {
-  return function (selector) {
-    
-  };
+    return function (selector) {
+        if(!(selector.selector || typeof selector === "string")){
+           throw "error"; 
+        }
+
+        let selected = $(selector);
+        if(!selected.length){
+            throw "error";
+        }
+        
+        let button = selected.find(".button");
+        button.text("hide").click(contentModifier);
+
+
+        function contentModifier(event) {
+            let flag = false;
+            let content;
+            selected.each(function(element){
+                if(element === event.target){
+                    flag = true;
+                }
+                if(flag && $(event.target).hasClass("content")){
+                    let isButton = $(event.target).next();
+                    if(isButton.hasClass("button")){
+                        content = $(event.target);
+                        return false;
+                    }
+                }
+            });
+
+            if(content.is(":visible")){
+                content.hide();
+                button.text("show");
+            }else {
+                content.show();
+                button.text("hide");
+            }
+
+        }
+    };
 };
 
 module.exports = solve;
