@@ -20,9 +20,32 @@ Create a function that takes a selector and COUNT, then generates inside a UL wi
 */
 
 function solve() {
-  return function (selector, count) {
-   
-  };
+    return function (selector, count) {
+        if(Array.isArray(selector)){
+            throw "error";
+        }
+        if(!selector) {
+            throw "error";
+        }
+        if(count < 1) {
+            throw "error";
+        }
+        if(!count) {
+            throw "error";
+        }
+        if(isNaN(count)){
+            throw "error";
+        }
+        let selection = $(selector);
+        if(!selection.length){
+            return;
+        }
+        selection.append($("<ul>").attr({class: "items-list"}));
+        let list = $(".items-list");
+        for (let i = 0; i < count; i++) {
+            list.append($("<li>").attr({class: "list-item"}).text("List item #" + i));            
+        }
+    };
 };
 
 module.exports = solve;
