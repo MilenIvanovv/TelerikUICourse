@@ -1,0 +1,31 @@
+#btn-picker {
+    height:50px; 
+    width:50px; 
+    margin:0; 
+    padding:0; 
+    /* position:absolute; */
+    background: url("./imgs/icon.jpg");
+}
+
+#exit {
+    height: 50px;
+    width: 50px;
+}
+
+#colorPicker {
+    background-color: gray;
+    border-radius: 10px;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}
+
+#myCanvas {
+    cursor: url("./imgs/cursor.png") -12 22 , auto;
+}
+
+#color {
+    height: 60px;
+    width: 150px;
+    background-color: white;
+}
