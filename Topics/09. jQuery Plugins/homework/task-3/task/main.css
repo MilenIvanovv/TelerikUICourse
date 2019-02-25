@@ -1,0 +1,8 @@
+.add-btn::before {
+    content: ' ';
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    background-size: cover;
+    background-image: url(imgs/plus.png);
+}
