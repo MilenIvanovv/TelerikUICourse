@@ -68,18 +68,18 @@ $.fn.colorpicker = function () {
 
     function getColor(event) {
         let data,offsetTop,offsetLeft;
-        offsetTop = event.target.getBoundingClientRect().top;
-        offsetLeft = event.target.getBoundingClientRect().left;
+        offsetTop = canvas.offset().top + $(window).scrollTop();
+        offsetLeft = canvas.offset().left + $(window).scrollLeft();
         data = ctx.getImageData(event.pageX-offsetLeft,event.pageY-offsetTop,1,1).data;
-        inputRGB[0].value = data[0] + "." + data[1] + "." + data[2];
-        inputHEX[0].value = RGBtoHEX(data[0],data[1],data[3]);
+        inputRGB.val(data[0] + "." + data[1] + "." + data[2]);
+        inputHEX.val(RGBtoHEX(data[0],data[1],data[3]));
         inputHEX.copy();
         colorPreview.css("background-color", "rgb(" + data[0] + "," + data[1] + "," + data[2] + ")");
     }
 
     function changeColorbyHEX(event) {
         colorPreview.css("background-color", event.target.value);
-        inputRGB[0].value = hexToRgb(event.target.value);
+        inputRGB.val(hexToRgb(event.target.value));
         inputHEX.copy;
     }
 
@@ -87,8 +87,8 @@ $.fn.colorpicker = function () {
         let color = event.target.value.replace(".", ",");
         color = color.replace(".", ",");
         colorPreview.css("background-color", "rgb(" + color + ")");
-        let colors = color.split(",");
-        inputHEX[0].value = RGBtoHEX(Number(colors[0]),Number(colors[1]),Number(colors[2]));
+        let rgb = color.split(",");
+        inputHEX[0].value = RGBtoHEX(Number(rgb[0]),Number(rgb[1]),Number(rgb[2]));
         inputHEX.copy();
     }
 
