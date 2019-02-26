@@ -2,18 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Colorpicker</title>
+    <title>HTML Template Taks3</title>
     <link rel="stylesheet" href="./main.css">
 </head>
 <body>
-    <div id="root">
-    </div>
+    <ul id="books-list" data-template="book-item-template"></ul>
+    <script id="book-item-template" type="text/x-handlebars-template">
+        <li class="book-item">
+            <a href="/#books/{{id}}">
+                <strong>{{title}}</strong>
+            </a>
+        </li>	
+    </script>  
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="../node_modules/handlebars/dist/handlebars.min.js"></script>
-    <script src="./task-2.js"></script>
+    <script src="./task-3.js"></script>
     <script>
-        solve()("#root");
+        var books = [{
+            id:"id1",
+            title:"title1"
+        },{
+            id:"id2",
+            title:"title2"
+        }];
+        solve()();
+        $('#books-list').listview(books);
     </script>
 </body>
 </html>
