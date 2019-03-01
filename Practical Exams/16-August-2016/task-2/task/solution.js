@@ -1,101 +1,107 @@
+var data = [
+    { name: 'file1.txt', content: 'some text' },
+    { name: 'file2.txt', content: 'another text' },
+    { name: 'tests.js', content: '// writing tests is boring' },
+    { name: 'file3.cs', content: 'public static void override sealed new internal volatile inline Main(){ System.Console.WriteLine("hello"); }' },
+    { name: 'sticky-note.txt', content: 'wash the dishes!' }
+];
+
+
+let DragAndDropElement;
+let dropHandler = (event) => {
+    event.preventDefault();
+    $(DragAndDropElement).remove();
+}
+
+let dragOverHandler = (event) => {
+    event.preventDefault();
+}
+
+let startDragHandler = (event) => {
+    DragAndDropElement = event.target;
+}
+
 function solve() {
     return function (filesMap) {
-        'use strict';
+        //initial structure
+        let fileExplorer = $("<section>").attr({class:"file-explorer"}),
+            addWrapper = $("<div>").attr({class:"add-wrapper"}).appendTo(fileExplorer),
+            items = $("<ul>").attr({class:"items"}).appendTo(fileExplorer),
+            addButton = $("<a>").attr({class: "add-btn visible"}).appendTo(addWrapper),
+            input = $("<input>").attr({type: "text"}).appendTo(addWrapper),
+            bin = $("<a>").addClass("del-btn").on("dragover",dragOverHandler).on("drop",dropHandler).appendTo(addWrapper),
+            filePreview = $("<article>").attr({class:"file-preview"}),
+            fileContent = $("<p>").attr({ class: "file-content"}).appendTo(filePreview);
 
-        var $items = $('.file-explorer > .items'),
-            $contentsPreview = $('.file-content'),
-            $addBtn = $('.file-explorer .add-btn'),
-            $addInput = $('.file-explorer input'),
-            $fileContentsByName = JSON.parse(JSON.stringify(filesMap)),
-            $dirsByName = {};
+        $("#file-explorer").append(fileExplorer);
+        $("#file-explorer").append(filePreview);
 
-        $('.dir-item .item-name').each(function (index, element) {
-            $dirsByName[element.innerHTML] = $(element.parentNode);
-        });
+        //file Template
+        let file = $("<li>").attr({class:"file-item item",draggable:"true"}).append($("<a>").addClass("file-name"));
 
-        $items.on('click', function (event) {
-            var $target = $(event.target),
-                $parent = $target.parent(),
-                itemName,
-                previewContents;
+        //folder Template
+        let folder = $("<li>").attr({class:"dir-item item collapsed",draggable:"true"})
+            .append($("<a>").addClass("item-name"))
+            .append($("<ul>").addClass("items"));
 
-            if ($target.hasClass('del-btn')) {
-
-                itemName = $parent.find('.item-name').html();
-
-                if ($parent.hasClass('dir-item')) {
-                    delete $dirsByName[itemName];
-                } else {
-                    delete $fileContentsByName[itemName];
-                }
-
-                $parent.remove();
-                return;
-            }
-
-            if ($parent.hasClass('file-item')) {
-                previewContents = $fileContentsByName[$target.text()] || '';
-                $contentsPreview.text(previewContents);
-            }
-
-            if ($parent.hasClass('dir-item')) {
-                $parent.toggleClass('collapsed');
-            }
-
-        });
-
-        function renderFile(name) {
-            var $fileLi = $('<li />')
-                                .addClass('file-item item'),
-                $itemName = $('<a />')
-                                .text(name)
-                                .addClass('item-name')
-                                .appendTo($fileLi),
-                $delBtn = $('<a />')
-                                .addClass('del-btn')
-                                .appendTo($fileLi);
-
-            return $fileLi;
+        let showPreview = (event) => {
+            let fileData =  searchForData(filesMap,$(event.target).text());
+            fileContent.text(fileData)
         }
 
-        $addBtn.on('click', function () {
-            $addInput.addClass('visible');
-            $addBtn.removeClass('visible');
-        });
-
-        $addInput.on('keydown', function (event) {
-            if (event.keyCode !== 13) {
-                return;
-            }
-
-            var file,
-                path = $addInput
-                            .val()
-                            .split('/');
-
-            if (!path[0] && !path[1]) {
-                return;
-            }
-                
-            if (path.length === 1) {
-                renderFile(path[0]).appendTo($items);
-            } else {
-                file = renderFile(path[1]);
-
-                if (!$dirsByName[path[0]]) {
+        let searchForData = (files,fileName) => {
+            let fileData;
+            files.forEach((item) => {
+                if(fileData){
                     return;
                 }
-                    
-                $dirsByName[path[0]]
-                    .children('ul.items')
-                    .append(file);
+                if(!item.content){
+                    fileData = searchForData(item.files,fileName);
+                    if(fileData){
+                        return;
+                    }
+                }
+                if(item.name === fileName){
+                    fileData = item.content;
+                    return;
+                }
+            })
+            return fileData;
+        }
+
+        let loadFiles = (destination,filesMap) => {
+            let newFile;
+            filesMap.forEach((item) => {
+                if(item.files){
+                    newFile = folder.clone();
+                    newFile.click(openFolder);
+                    loadFiles(newFile.find("ul"),item.files);
+                }
+                else{
+                    newFile = file.clone();
+                    newFile.click(showPreview);
+                }
+                newFile.find(".file-name").text(item.name);
+                newFile.on("dragstart",startDragHandler);
+
+                newFile.appendTo(destination);
+            })
+        }
+
+
+
+        let openFolder = (event) => {
+            let folder = $(event.target).parent();
+            if(folder.hasClass("collapsed")){
+                folder.removeClass("collapsed");
+                return;
             }
+            folder.addClass("collapsed");
+        }
+        loadFiles(items,filesMap);
 
-            $addInput.val('');
 
-            $addInput.removeClass('visible');
-            $addBtn.addClass('visible');
-        });
+        
     }
 }
 
